@@ -29,11 +29,25 @@ app.use(express.urlencoded({ extended: false }))
 // console.log(process.env.MONGO_URI)
 
 // Default Route
-app.get("/" , (req , res) => {
-    res.json({
-        message : "WELCOME TO IMAGINEX API"
+// app.get("/" , (req , res) => {
+//     res.json({
+//         message : "WELCOME TO IMAGINEX API"
+//     })
+// })
+
+if (process.env.NODE_ENV === "production") {
+    // client/dist folder serve karo
+    app.use(express.static(path.join(__dirname, "../client/dist")))
+    
+    // Koi bhi route jo /api se na shuru ho, index.html return karo
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../client/dist", "index.html"))
     })
-})
+} else {
+    app.get("/", (req, res) => {
+        res.json({ message: "WELCOME TO IMAGINEX API" })
+    })
+}
 
 
 // Auth Routes
