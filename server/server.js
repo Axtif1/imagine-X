@@ -108,7 +108,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
 
-// Routes
+// API routes
 app.use("/api/auth", authRoutes)
 app.use("/api/user", followRoutes)
 app.use("/api/profile", profileRoutes)
@@ -116,17 +116,16 @@ app.use("/api/admin", adminRoutes)
 app.use("/api/posts", postRoutes)
 app.use("/api/saved-posts", savedPostRoutes)
 
-
 // Serve frontend
-app.use(express.static(path.join(__dirname, "../client/build")))
+app.use(express.static(path.join(__dirname, "../client/dist")))
 
-app.use((req, res) => {
-  res.sendFile(path.resolve(__dirname, "../client/build/index.html"));
-});
-
-
-// Error handler
+// Error handler FIRST
 app.use(errorHandler)
+
+// Fallback route LAST
+app.use((req, res) => {
+  res.sendFile(path.resolve(__dirname, "../client/dist/index.html"))
+})
 
 // Start server
 app.listen(PORT, () => {
