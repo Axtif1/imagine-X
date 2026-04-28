@@ -47,16 +47,16 @@ export const ProfilePage = () => {
           <p className="text-zinc-500 mb-4">@{profile?.name}</p>
           <p className="text-zinc-300 max-w-lg mb-6 leading-relaxed">{profile?.bio}</p>
           
-          <div className="flex items-center gap-6 mb-8 text-sm">
-            <div className="flex flex-col">
+          <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-6 mb-8 text-sm w-full max-w-sm">
+            <div className="flex flex-col flex-1 min-w-[80px]">
               <span className="font-bold text-white text-lg">{profile?.posts?.length || 0}</span>
               <span className="text-zinc-500">Posts</span>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col flex-1 min-w-[80px]">
               <span className="font-bold text-white text-lg">{profile?.followers?.length || 0}</span>
               <span className="text-zinc-500">Followers</span>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col flex-1 min-w-[80px]">
               <span className="font-bold text-white text-lg">{profile?.followings?.length || 0}</span>
               <span className="text-zinc-500">Following</span>
             </div>

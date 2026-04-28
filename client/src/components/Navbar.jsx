@@ -37,9 +37,15 @@ export const Navbar = () => {
     <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-zinc-950/80 border-b border-zinc-800">
       <div className="flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-4 flex-1">
+          {/* Logo visible only below lg, since Sidebar has it for lg+ */}
+          <Link to="/" className="flex lg:hidden items-center gap-2 group mr-2">
+            <div className="bg-gradient-to-tr from-violet-600 to-purple-500 rounded-lg p-1 group-hover:scale-105 transition-transform">
+              <Hexagon className="h-6 w-6 text-white" />
+            </div>
+          <span className="font-bold text-xl tracking-tight">Imaginex</span>
+          </Link>
 
-
-          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl relative ml-6">
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-xl relative lg:ml-6">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <input
               name="search"
@@ -50,7 +56,7 @@ export const Navbar = () => {
           </form>
         </div>
 
-        <nav className="hidden md:flex items-center gap-x-6 relative left-3">
+        <nav className="hidden lg:flex items-center gap-x-6 relative left-3">
           <NavLink to="/feed" className={({ isActive }) => cn("text-sm font-medium transition-colors hover:text-zinc-100", isActive ? "text-violet-400" : "text-zinc-400")}>
             Home
           </NavLink>
@@ -112,14 +118,14 @@ export const Navbar = () => {
             </>
           )}
 
-          <button className="md:hidden p-2 text-zinc-400 hover:text-zinc-100" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+          <button className="lg:hidden p-2 text-zinc-400 hover:text-zinc-100" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-zinc-800 bg-zinc-950/95 p-4 animate-fadeIn space-y-4">
+        <div className="lg:hidden border-t border-zinc-800 bg-zinc-950/95 p-4 animate-fadeIn space-y-4 shadow-xl">
           <form onSubmit={handleSearch} className="flex relative w-full mb-4">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
             <input
@@ -132,7 +138,6 @@ export const Navbar = () => {
           <div className="flex flex-col gap-2">
             <Link to="/feed" className="px-4 py-3 rounded-lg hover:bg-zinc-900 text-zinc-300 hover:text-zinc-100" onClick={() => setMobileMenuOpen(false)}>Home</Link>
             <Link to="/explore" className="px-4 py-3 rounded-lg hover:bg-zinc-900 text-zinc-300 hover:text-zinc-100" onClick={() => setMobileMenuOpen(false)}>Explore</Link>
-            {/* <Link to="/generate" className="px-4 py-3 rounded-lg bg-violet-600/10 text-violet-400" onClick={() => setMobileMenuOpen(false)}>Create Avatar</Link> */}
             {isLoggedIn && user?.isAdmin && (
               <Link to="/admin/dashboard" className="px-4 py-3 rounded-lg bg-violet-600/10 text-violet-400" onClick={() => setMobileMenuOpen(false)}>
                 Admin Panel

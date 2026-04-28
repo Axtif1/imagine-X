@@ -14,6 +14,7 @@ import { ExplorePage } from './pages/ExplorePage';
 import { GeneratePage } from './pages/GeneratePage';
 import { ProfilePage } from './pages/ProfilePage';
 import { PostDetailPage } from './pages/PostDetailPage';
+import { SettingsPage } from './pages/SettingsPage';
 import { AdminProtectedRoute } from './components/AdminProtectedRoute';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminPosts } from './pages/admin/AdminPosts';
@@ -21,15 +22,17 @@ import { AdminReports } from './pages/admin/AdminReports';
 import { AdminUsers } from './pages/admin/AdminUsers';
 import { Sidebar } from './components/Sidebar';
 import { Navbar } from './components/Navbar';
+import { MobileNav } from './components/MobileNav';
 
 const AppLayout = ({ children }) => (
   <div className="flex h-screen overflow-hidden">
     <Sidebar />
     <div className="flex-1 flex flex-col relative overflow-hidden">
       <Navbar />
-      <main className="flex-1 overflow-y-auto pb-20 md:pb-0">
+      <main className="flex-1 overflow-y-auto pb-20 lg:pb-0">
         {children}
       </main>
+      <MobileNav />
     </div>
   </div>
 )
@@ -62,6 +65,7 @@ function App() {
         <Route path="/feed" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
         <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />
         <Route path="/generate" element={<ProtectedRoute><GeneratePage /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><SettingsPage /></ProtectedRoute>} />
         <Route path="/profile/:username" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="/post/:id" element={<ProtectedRoute><PostDetailPage /></ProtectedRoute>} />
 

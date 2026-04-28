@@ -50,26 +50,30 @@ export const GeneratePage = () => {
     <div className="min-h-screen bg-zinc-950 flex flex-col">
       <div className="flex flex-1 overflow-hidden">
         <main className="flex-1 overflow-y-auto p-4 md:p-6 lg:p-10">
-          <div className="max-w-[1200px] mx-auto animate-fadeIn">
+          <div className="max-w-[1400px] mx-auto animate-fadeIn">
             <h1 className="text-3xl font-extrabold text-white mb-2">Create an Image</h1>
             <p className="text-zinc-400 mb-8">Turn your words into reality using state-of-the-art AI.</p>
             
-            <PromptInput 
-              onGenerate={handleGenerate} 
-              isGenerating={generationState.isGenerating} 
-            />
-
-            {(generationState.isGenerating) && (
-              <div className="mt-12 w-full pt-12 border-t border-zinc-800/50">
-                <GeneratedImage 
-                  isGenerating={generationState.isGenerating}
-                  imageUrl={generationState.result?.imageUrl}
-                  prompt={generationState.result?.prompt}
-                  style={generationState.result?.style}
-                  onPost={handlePost}
+            <div className={`flex flex-col ${generationState.isGenerating ? 'lg:flex-row lg:gap-10' : ''}`}>
+              <div className={generationState.isGenerating ? 'lg:w-1/2' : 'w-full max-w-[1000px]'}>
+                <PromptInput 
+                  onGenerate={handleGenerate} 
+                  isGenerating={generationState.isGenerating} 
                 />
               </div>
-            )}
+
+              {(generationState.isGenerating) && (
+                <div className="mt-8 lg:mt-0 lg:w-1/2 pt-8 lg:pt-0 border-t lg:border-t-0 lg:border-l border-zinc-800/50 lg:pl-10">
+                  <GeneratedImage 
+                    isGenerating={generationState.isGenerating}
+                    imageUrl={generationState.result?.imageUrl}
+                    prompt={generationState.result?.prompt}
+                    style={generationState.result?.style}
+                    onPost={handlePost}
+                  />
+                </div>
+              )}
+            </div>
           </div>
         </main>
       </div>

@@ -94,7 +94,7 @@ export const PostDetailPage = () => {
           <div className="max-w-[1200px] mx-auto bg-zinc-900 rounded-3xl border border-zinc-800 shadow-2xl flex flex-col md:flex-row overflow-hidden animate-fadeIn">
 
             {/* Image Section */}
-            <div className="md:w-[55%] lg:w-3/5 relative bg-zinc-950 flex items-center justify-center overflow-hidden">
+            <div className="md:w-[55%] lg:w-3/5 relative bg-zinc-950 flex items-center justify-center overflow-hidden min-h-[300px] md:min-h-0">
               {!imageLoaded && (
                 <div className="absolute inset-0 z-0">
                   <ImageSkeleton className="h-full w-full rounded-none" />
@@ -104,12 +104,12 @@ export const PostDetailPage = () => {
                 src={post.imageLink}
                 alt={post.prompt}
                 onLoad={() => setImageLoaded(true)}
-                className={`w-full max-h-[85vh] object-contain relative z-10 transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                className={`w-full md:max-h-[85vh] object-contain relative z-10 transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
               />
             </div>
 
             {/* Info Section */}
-            <div className="md:w-[45%] lg:w-2/5 flex flex-col bg-zinc-900 border-l border-zinc-800 max-h-[85vh] overflow-y-auto text-zinc-100">
+            <div className="md:w-[45%] lg:w-2/5 flex flex-col bg-zinc-900 md:border-l border-zinc-800 md:max-h-[85vh] overflow-y-auto text-zinc-100">
 
               <div className="p-6 md:p-8 flex-1 flex flex-col">
                 {/* Action Bar */}
