@@ -65,6 +65,23 @@ export const PostDetailPage = () => {
       .catch((err) => toast.error(err || "Failed to report post", { position: "top-center", theme: "dark" }))
   }
 
+  const handleDownload = async () => {
+  try {
+    const response = await fetch(post.imageLink);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${post.prompt || 'image'}.jpg`; // ✅ filename
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.log("Download failed:", error);
+  }
+}
+
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col">
       <main className="flex-1 p-4 md:p-8 overflow-y-auto">
@@ -106,18 +123,11 @@ export const PostDetailPage = () => {
                     />
                   </div>
                   <div className="flex gap-2">
-                    <Button
-                      size="icon"
-                      variant="secondary"
+                    <Button 
+                      size="icon" 
+                      variant="secondary" 
                       className="rounded-full"
-                      onClick={() => {
-                        const url = post.imageLink
-                        const a = document.createElement('a')
-                        a.href = url
-                        a.download = 'imaginex-image.png'
-                        a.target = '_blank'
-                        a.click()
-                      }}
+                      onClick={handleDownload}  // ✅ Add karo
                     >
                       <Download className="h-4 w-4" />
                     </Button>
