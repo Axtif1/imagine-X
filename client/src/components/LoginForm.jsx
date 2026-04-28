@@ -8,24 +8,24 @@ import { loginUser } from '../features/auth/authSlice';
 import { toast } from 'react-toastify';
 
 export const LoginForm = () => {
-  
-  const { user , isLoading , isError , isSuccess , message} = useSelector(state => state.auth);
-  
-  const [formData , setFormData] = useState({
-    email : "" ,
-    password : "" ,
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(state => state.auth);
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
   })
-  
-  const { email ,password } = formData
-  
+
+  const { email, password } = formData
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name] : e.target.value
+      [e.target.name]: e.target.value
     })
   }
-  
-  
+
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -36,27 +36,21 @@ export const LoginForm = () => {
 
     //Login User 
     dispatch(loginUser(formData))
-    
+
   }
 
 
   useEffect(() => {
-    if(isSuccess || user){
+    if (isSuccess || user) {
       navigate("/feed")
     }
 
-    if(isError && message) {
-      toast.error(message , {position : "top-center"})
+    if (isError && message) {
+      toast.error(message, { position: "top-center" })
     }
 
-  }, [user , isError , message])
+  }, [user, isError, message])
 
-
-  if(isLoading) {
-    return (
-      <Loader/>
-    )
-  }
 
   return (
     <div className="w-full max-w-md bg-zinc-900 border border-zinc-800 p-8 rounded-3xl shadow-2xl animate-fadeIn">
@@ -71,35 +65,35 @@ export const LoginForm = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        <Input 
-          label="Email address" 
-          name="email" 
+        <Input
+          label="Email address"
+          name="email"
           value={email}
           onChange={handleChange}
           type="email"
-          required 
+          required
           placeholder="you@example.com"
         />
         <div>
-          <Input 
+          <Input
             label={
               <span className="flex w-full items-center justify-between">
                 Password
                 <Link to="/forgot-password" className="text-xs text-violet-400 hover:text-violet-300 transition-colors">Forgot password?</Link>
               </span>
             }
-            type="password" 
-            name="password" 
-            required 
+            type="password"
+            name="password"
+            required
             value={password}
             onChange={handleChange}
             placeholder="••••••••"
           />
         </div>
-        
-        <Button 
-          type="submit" 
-          className="w-full mt-2 h-12 text-md" 
+
+        <Button
+          type="submit"
+          className="w-full mt-2 h-12 text-md"
           isLoading={isLoading}
         >
           {isLoading ? 'Signing in...' : 'Sign in'}

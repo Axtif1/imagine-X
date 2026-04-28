@@ -9,64 +9,60 @@ import { toast } from 'react-toastify';
 
 export const RegisterForm = () => {
 
-  
-  
-  const { user , isLoading , isError , isSuccess , message} = useSelector(state => state.auth);
-  
-  const [formData , setFormData] = useState({
-    name : "" ,
-    email : "" ,
-    phone : "" ,
-    password : "" ,
-    bio : "" ,
-    
+
+
+  const { user, isLoading, isError, isSuccess, message } = useSelector(state => state.auth);
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+    bio: "",
+
   })
-  
-  const {name , email , phone , password , bio} = formData
-  
+
+  const { name, email, phone, password, bio } = formData
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name] : e.target.value
+      [e.target.name]: e.target.value
     })
   }
-  
-  
+
+
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     //Register User 
-    dispatch(registerUser(formData))
-    
-    // Simulate API delay
-    setTimeout(() => {
-      navigate('/feed');
-    }, 1000);
+    const res = await dispatch(registerUser(formData))
+
+    if (!res.error) {
+      localStorage.setItem('verifyEmail', formData.email);
+      navigate('/verify-email', { state: { email: formData.email } });
+    }
   };
 
 
   useEffect(() => {
-    if(user){
+    // If the user is already logged in (has valid token and is verified), go to home
+    if (user) {
       navigate("/")
     }
 
-    if(isError && message) {
-      toast.error(message , {position : "top-center"})
+    if (isError && message) {
+      toast.error(message, { position: "top-center" })
     }
 
-  }, [user , isError , message])
+  }, [user, isError, message])
 
 
-  if(isLoading) {
-    return (
-      <Loader/>
-    )
-  }
+
 
 
 
@@ -83,60 +79,60 @@ export const RegisterForm = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">
-        <Input 
-          label="Username" 
-          type="text" 
-          required 
-          name = 'name'
+        <Input
+          label="Username"
+          type="text"
+          required
+          name='name'
           value={name}
           onChange={handleChange}
           placeholder="artvault"
         />
-        <Input 
-          label="Email address" 
-          type="email" 
-          required 
-          name = 'email'
+        <Input
+          label="Email address"
+          type="email"
+          required
+          name='email'
           value={email}
           onChange={handleChange}
           placeholder="you@example.com"
         />
-        <Input 
+        <Input
           label="Phone Number"
-          type="phone" 
-          required 
-          name = 'phone' 
+          type="phone"
+          required
+          name='phone'
           value={phone}
           onChange={handleChange}
           placeholder="+919123456789"
         />
-        <Input 
+        <Input
           label="Password"
-          type="password" 
-          required 
-          name = 'password'
+          type="password"
+          required
+          name='password'
           value={password}
           onChange={handleChange}
           placeholder="••••••••"
         />
-        <Input 
+        <Input
           label="Bio"
-          type="text" 
-          required 
-          name = 'bio'
+          type="text"
+          required
+          name='bio'
           value={bio}
           onChange={handleChange}
           placeholder="Enter Your Bio"
         />
-        
-        
+
+
         <p className="text-xs text-zinc-500 mt-2">
           By signing up, you agree to our Terms of Service and Privacy Policy.
         </p>
 
-        <Button 
-          type="submit" 
-          className="w-full mt-4 h-12 text-md" 
+        <Button
+          type="submit"
+          className="w-full mt-4 h-12 text-md"
           isLoading={isLoading}
         >
           {isLoading ? 'Creating account...' : 'Create account'}

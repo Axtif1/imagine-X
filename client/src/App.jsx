@@ -6,6 +6,9 @@ import { ToastContainer } from 'react-toastify';
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
+import { VerifyEmailPage } from './pages/VerifyEmailPage';
+import { ForgotPasswordPage } from './pages/ForgotPasswordPage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { FeedPage } from './pages/FeedPage';
 import { ExplorePage } from './pages/ExplorePage';
 import { GeneratePage } from './pages/GeneratePage';
@@ -52,6 +55,9 @@ function App() {
         <Route path="/" element={user ? <Navigate to="/feed" /> : <LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
 
         <Route path="/feed" element={<ProtectedRoute><FeedPage /></ProtectedRoute>} />
         <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />

@@ -1,6 +1,12 @@
 import User from "../models/userModel.js"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken"
+import sendEmail, { generateOTPContent, generatePasswordResetContent } from "../utils/sendEmail.js";
+
+// Utility to generate a 6-digit OTP
+const generateOTP = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+};
 
 const registerUser = async (req , res) => {
 
@@ -27,24 +33,43 @@ const registerUser = async (req , res) => {
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
+    // Generate OTP
+    const otp = generateOTP();
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
     // Register User
-    let user = await User.create({name , email , phone , password : hashedPassword , bio})
+    let user = await User.create({
+        name, 
+        email, 
+        phone, 
+        password: hashedPassword, 
+        bio,
+        isVerified: false,
+        otp,
+        otpExpiry
+    });
 
     if(!user){
         res.status(400)
         throw new Error("User Not Created")
     }
 
+    // Send OTP Email
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: "Verify Your Email - ImagineX",
+            html: generateOTPContent(otp)
+        });
+    } catch (error) {
+        // If email fails, we might want to log it or handle it, but we still created the user
+        console.error("Failed to send verification email:", error);
+    }
+
     res.status(201).json({
-        id : user._id,
-        name : user.name,
-        bio : user.bio,
-        email : user.email,
-        phone : user.phone,
-        isAdmin : user.isAdmin,
-        isActive : user.isActive,
-        credits : user.credits,
-        token : generateToken(user._id) 
+        message: "Registration successful. Please verify your email.",
+        email: user.email,
+        isVerified: user.isVerified
     })
 }
 
@@ -63,6 +88,12 @@ const loginUser = async (req , res) => {
     let user = await User.findOne({email : email})
 
     if(user && await bcrypt.compare(password , user.password)){
+        // Check if email is verified
+        if (!user.isVerified) {
+            res.status(403);
+            throw new Error("Please verify your email address before logging in.");
+        }
+
         res.status(200).json({
         id : user._id,
         name : user.name,
@@ -78,13 +109,172 @@ const loginUser = async (req , res) => {
         res.status(400)
         throw new Error("Invalid Credentials")
     }
-
-
-
 }
 
 
+// Verify Email OTP
+const verifyEmail = async (req, res) => {
+    const { email, otp } = req.body;
 
+    if (!email || !otp) {
+        res.status(400);
+        throw new Error("Email and OTP are required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        res.status(404);
+        throw new Error("User not found");
+    }
+
+    if (user.isVerified) {
+        res.status(400);
+        throw new Error("Email is already verified");
+    }
+
+    if (user.otp !== otp || user.otpExpiry < Date.now()) {
+        res.status(400);
+        throw new Error("Invalid or expired OTP");
+    }
+
+    user.isVerified = true;
+    user.otp = null;
+    user.otpExpiry = null;
+    await user.save();
+
+    res.status(200).json({ message: "Email verified successfully. You can now log in." });
+};
+
+// Resend OTP
+const resendOtp = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        res.status(400);
+        throw new Error("Email is required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        res.status(404);
+        throw new Error("User not found");
+    }
+
+    if (user.isVerified) {
+        res.status(400);
+        throw new Error("Email is already verified");
+    }
+
+    const otp = generateOTP();
+    user.otp = otp;
+    user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: "Your New OTP - ImagineX",
+            html: generateOTPContent(otp)
+        });
+        res.status(200).json({ message: "A new OTP has been sent to your email" });
+    } catch (error) {
+        res.status(500);
+        throw new Error("Failed to send OTP email");
+    }
+};
+
+// Forgot Password - Send OTP
+const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        res.status(400);
+        throw new Error("Email is required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        res.status(404);
+        throw new Error("User not found");
+    }
+
+    const otp = generateOTP();
+    user.otp = otp;
+    user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+    await user.save();
+
+    try {
+        await sendEmail({
+            email: user.email,
+            subject: "Password Reset OTP - ImagineX",
+            html: generatePasswordResetContent(otp)
+        });
+        res.status(200).json({ message: "Password reset OTP sent to your email" });
+    } catch (error) {
+        res.status(500);
+        throw new Error("Failed to send password reset email");
+    }
+};
+
+// Verify Reset OTP
+const verifyResetOtp = async (req, res) => {
+    const { email, otp } = req.body;
+
+    if (!email || !otp) {
+        res.status(400);
+        throw new Error("Email and OTP are required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        res.status(404);
+        throw new Error("User not found");
+    }
+
+    if (user.otp !== otp || user.otpExpiry < Date.now()) {
+        res.status(400);
+        throw new Error("Invalid or expired OTP");
+    }
+
+    res.status(200).json({ message: "OTP verified successfully. You can now reset your password." });
+};
+
+// Reset Password
+const resetPassword = async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    if (!email || !otp || !newPassword) {
+        res.status(400);
+        throw new Error("Email, OTP, and new password are required");
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+        res.status(404);
+        throw new Error("User not found");
+    }
+
+    // Verify OTP again just to be secure
+    if (user.otp !== otp || user.otpExpiry < Date.now()) {
+        res.status(400);
+        throw new Error("Invalid or expired OTP");
+    }
+
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword = bcrypt.hashSync(newPassword, salt);
+
+    user.password = hashedPassword;
+    user.otp = null;
+    user.otpExpiry = null;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully. You can now log in with your new password." });
+};
 
 // Protected Controller 
 const privateController = (req , res) => {
@@ -104,6 +294,15 @@ const generateToken = (id) => {
 }
 
 
-const authController = {registerUser , loginUser , privateController}
+const authController = {
+    registerUser, 
+    loginUser, 
+    privateController,
+    verifyEmail,
+    resendOtp,
+    forgotPassword,
+    verifyResetOtp,
+    resetPassword
+}
 
 export default authController
