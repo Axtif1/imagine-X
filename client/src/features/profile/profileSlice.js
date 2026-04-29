@@ -3,6 +3,7 @@ import profileService from "./profileService"
 
 const initialState = {
     profile : null ,
+    suggestedUsers: [],
     profileLoading : false,
     profileSuccess : false,
     profileError : false,
@@ -34,6 +35,19 @@ const profileSlice = createSlice({
                 state.profileError = true
                 state.profileErrorMessage = action.payload
             })
+            .addCase(getSuggestedUsers.pending, (state) => {
+                state.profileLoading = true
+            })
+            .addCase(getSuggestedUsers.fulfilled, (state, action) => {
+                state.profileLoading = false
+                state.suggestedUsers = action.payload
+            })
+            .addCase(getSuggestedUsers.rejected, (state, action) => {
+                state.profileLoading = false
+                state.profileError = true
+                state.profileErrorMessage = action.payload
+            })
+
     }
 })
 
@@ -49,6 +63,16 @@ export const getProfile = createAsyncThunk("GET/PROFILE" , async (name , thunkAP
         return await profileService.fetchProfile(name)
     } catch (error) {
         let message = error.response.data.message
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+export const getSuggestedUsers = createAsyncThunk("GET/SUGGESTED_USERS", async (_, thunkAPI) => {
+    try {
+        const token = thunkAPI.getState().auth.user.token
+        return await profileService.fetchSuggestedUsers(token)
+    } catch (error) {
+        const message = error.response?.data?.message || "Failed to fetch suggested users"
         return thunkAPI.rejectWithValue(message)
     }
 })

@@ -53,8 +53,32 @@ const getMyFollowings = async (req , res) => {
     res.status(200).json(user.followings)
 }
 
+const getSuggestedUsers = async (req, res) => {
+    const currentUserId = req.user._id
+    const currentUser = await User.findById(currentUserId)
 
-const profileController = {getMyFollowers , getMyFollowings , getProfile}
+    const users = await User.aggregate([
+        {
+            $match: {
+                _id: { $nin: [...currentUser.followings, currentUserId] },
+                isActive: true
+            }
+        },
+        { $sample: { size: 3 } },  // ← random 3 users
+        {
+            $project: {
+                name: 1,
+                avatar: 1,
+                bio: 1,
+                followers: 1
+            }
+        }
+    ])
+
+    res.status(200).json(users)
+}
+
+const profileController = {getMyFollowers , getMyFollowings , getProfile , getSuggestedUsers}
 
 
 export default profileController

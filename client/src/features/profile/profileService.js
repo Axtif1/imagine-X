@@ -9,7 +9,13 @@ const fetchProfile = async(username) =>{
     return response.data
 }
 
+const fetchSuggestedUsers = async (token) => {
+    const options = { headers: { authorization: `Bearer ${token}` } }
+    const response = await axios.get(`${API_URL}/suggested`, options)
+    return response.data
+}
 
-const profileService = { fetchProfile }
+
+const profileService = { fetchProfile  , fetchSuggestedUsers}
 
 export default profileService

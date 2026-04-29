@@ -1,24 +1,31 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { Compass, Sparkles, User, Home, Image as ImageIcon } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { mockUsers, mockTrendingTags } from '../mockData';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logoutUser } from '../features/auth/authSlice'
 import { Link } from 'react-router-dom';
 import { Hexagon } from 'lucide-react';
+import { getSuggestedUsers } from '../features/profile/profileSlice';
 
 
 export const Sidebar = () => {
 
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const { suggestedUsers, profileLoading } = useSelector(state => state.profile)
+  const { user } = useSelector(state => state.auth)
 
 
 
   const handleLogout = () => {
     dispatch(logoutUser())
   }
+
+  useEffect(() => {
+    if (user) dispatch(getSuggestedUsers())
+  }, [])
 
   return (
     <aside className="hidden lg:flex flex-col w-64 h-full sticky top-16 border-r border-zinc-800 p-6 overflow-y-auto">
@@ -48,35 +55,45 @@ export const Sidebar = () => {
         </div>
 
         <div>
-          <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Trending Tags</h3>
-          <div className="flex flex-wrap gap-2">
-            {mockTrendingTags.map((tag) => (
-              <span key={tag} className="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-xs text-zinc-300 cursor-pointer hover:border-violet-500 hover:text-violet-400 transition-colors">
-                #{tag}
-              </span>
-            ))}
+  <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Suggested Creators</h3>
+  <div className="flex flex-col gap-3">
+    {profileLoading ? (
+      [...Array(3)].map((_, i) => (
+        <div key={i} className="flex items-center gap-3">
+          <div className="h-8 w-8 rounded-full bg-zinc-800 animate-pulse" />
+          <div className="flex-1 space-y-1">
+            <div className="h-3 bg-zinc-800 rounded animate-pulse w-24" />
+            <div className="h-2 bg-zinc-800 rounded animate-pulse w-16" />
           </div>
         </div>
-
-        <div>
-          <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Suggested Creators</h3>
-          <div className="flex flex-col gap-3">
-            {mockUsers.map((user) => (
-              <div key={user.id} className="flex items-center justify-between group cursor-pointer">
-                <div className="flex items-center gap-3 overflow-hidden">
-                  <div className="relative">
-                    <img src={user.avatar} alt={user.username} className="h-8 w-8 rounded-full border border-zinc-700 object-cover group-hover:border-violet-500 transition-colors" />
-                    {user.isFollowing && <div className="absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 bg-green-500 rounded-full border border-zinc-950" />}
-                  </div>
-                  <div className="truncate">
-                    <p className="text-sm text-zinc-100 font-medium truncate">{user.name}</p>
-                    <p className="text-xs text-zinc-500 truncate">@{user.username}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+      ))
+    ) : suggestedUsers?.length === 0 ? (
+      <p className="text-xs text-zinc-500">No suggestions found</p>
+    ) : suggestedUsers?.map((u) => (   // ← mockUsers.map ki jagah suggestedUsers.map
+      <div
+        key={u._id}
+        className="flex items-center gap-3 cursor-pointer group"
+        onClick={() => navigate(`/profile/${u.name}`)}
+      >
+        <div className="h-8 w-8 rounded-full bg-zinc-700 border border-zinc-600 group-hover:border-violet-500 transition-colors flex items-center justify-center text-sm font-bold flex-shrink-0">
+          {u.avatar ? (
+            <img src={u.avatar} alt={u.name} className="h-8 w-8 rounded-full object-cover" />
+          ) : (
+            u.name?.charAt(0).toUpperCase()
+          )}
         </div>
+        <div className="truncate">
+          <p className="text-sm text-zinc-100 font-medium truncate group-hover:text-violet-400 transition-colors">
+            {u.name}
+          </p>
+          <p className="text-xs text-zinc-500 truncate">
+            {u.followers?.length || 0} followers
+          </p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
       </div>
     </aside>
   );
