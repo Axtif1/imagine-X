@@ -54,17 +54,14 @@ const registerUser = async (req , res) => {
         throw new Error("User Not Created")
     }
 
-    // Send OTP Email
-    try {
-        await sendEmail({
-            email: user.email,
-            subject: "Verify Your Email - ImagineX",
-            html: generateOTPContent(otp)
-        });
-    } catch (error) {
-        // If email fails, we might want to log it or handle it, but we still created the user
+    // Send OTP Email asynchronously in the background
+    sendEmail({
+        email: user.email,
+        subject: "Verify Your Email - ImagineX",
+        html: generateOTPContent(otp)
+    }).catch(error => {
         console.error("Failed to send verification email:", error);
-    }
+    });
 
     res.status(201).json({
         message: "Registration successful. Please verify your email.",
@@ -172,17 +169,16 @@ const resendOtp = async (req, res) => {
     user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    try {
-        await sendEmail({
-            email: user.email,
-            subject: "Your New OTP - ImagineX",
-            html: generateOTPContent(otp)
-        });
-        res.status(200).json({ message: "A new OTP has been sent to your email" });
-    } catch (error) {
-        res.status(500);
-        throw new Error("Failed to send OTP email");
-    }
+    // Send OTP Email asynchronously in the background
+    sendEmail({
+        email: user.email,
+        subject: "Your New OTP - ImagineX",
+        html: generateOTPContent(otp)
+    }).catch(error => {
+        console.error("Failed to send OTP email:", error);
+    });
+
+    res.status(200).json({ message: "A new OTP has been sent to your email" });
 };
 
 // Forgot Password - Send OTP
@@ -206,17 +202,16 @@ const forgotPassword = async (req, res) => {
     user.otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
     await user.save();
 
-    try {
-        await sendEmail({
-            email: user.email,
-            subject: "Password Reset OTP - ImagineX",
-            html: generatePasswordResetContent(otp)
-        });
-        res.status(200).json({ message: "Password reset OTP sent to your email" });
-    } catch (error) {
-        res.status(500);
-        throw new Error("Failed to send password reset email");
-    }
+    // Send OTP Email asynchronously in the background
+    sendEmail({
+        email: user.email,
+        subject: "Password Reset OTP - ImagineX",
+        html: generatePasswordResetContent(otp)
+    }).catch(error => {
+        console.error("Failed to send password reset email:", error);
+    });
+
+    res.status(200).json({ message: "Password reset OTP sent to your email" });
 };
 
 // Verify Reset OTP
