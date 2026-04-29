@@ -5,7 +5,6 @@ const initialState = {
     users: [],
     posts: [],
     reports: [],
-    stats: null,
     adminLoading: false,
     adminSuccess: false,
     adminError: false,
@@ -114,90 +113,27 @@ const adminSlice = createSlice({
                 state.adminErrorMessage = action.payload
             })
             .addCase(deleteAdminPost.fulfilled, (state, action) => {
-    state.adminLoading = false
-    state.posts = state.posts.filter(p => p._id !== action.payload)
-    // ✅ Report bhi hatao jiska post delete hua
-    state.reports = state.reports.filter(r => r.post?._id !== action.payload)
-})
-.addCase(deleteAdminPost.rejected, (state, action) => {
-    state.adminLoading = false
-    state.adminError = true
-    state.adminErrorMessage = action.payload
-})
+                state.adminLoading = false
+                state.posts = state.posts.filter(p => p._id !== action.payload)
+                // ✅ Report bhi hatao jiska post delete hua
+                state.reports = state.reports.filter(r => r.post?._id !== action.payload)
+            })
+            .addCase(deleteAdminPost.rejected, (state, action) => {
+                state.adminLoading = false
+                state.adminError = true
+                state.adminErrorMessage = action.payload
+            })
 
-// Dismiss Report
-.addCase(dismissReport.fulfilled, (state, action) => {
-    state.adminLoading = false
-    state.reports = state.reports.filter(r => r._id !== action.payload)
-})
-.addCase(dismissReport.rejected, (state, action) => {
-    state.adminLoading = false
-    state.adminError = true
-    state.adminErrorMessage = action.payload
-})
-
-// Update User
-.addCase(updateUser.pending, (state) => {
-    state.adminLoading = true
-    state.adminError = false
-})
-.addCase(updateUser.fulfilled, (state, action) => {
-    state.adminLoading = false
-    state.adminSuccess = true
-    state.users = state.users.map((u) => u._id === action.payload._id ? action.payload : u)
-    state.adminError = false
-})
-.addCase(updateUser.rejected, (state, action) => {
-    state.adminLoading = false
-    state.adminError = true
-    state.adminErrorMessage = action.payload
-})
-
-// Delete User
-.addCase(deleteUser.fulfilled, (state, action) => {
-    state.adminLoading = false
-    state.users = state.users.filter((u) => u._id !== action.payload)
-    state.adminError = false
-})
-.addCase(deleteUser.rejected, (state, action) => {
-    state.adminLoading = false
-    state.adminError = true
-    state.adminErrorMessage = action.payload
-})
-
-// Update Report
-.addCase(updateReport.pending, (state) => {
-    state.adminLoading = true
-    state.adminError = false
-})
-.addCase(updateReport.fulfilled, (state, action) => {
-    state.adminLoading = false
-    state.adminSuccess = true
-    state.reports = state.reports.map((r) => r._id === action.payload._id ? action.payload : r)
-    state.adminError = false
-})
-.addCase(updateReport.rejected, (state, action) => {
-    state.adminLoading = false
-    state.adminError = true
-    state.adminErrorMessage = action.payload
-})
-
-// Fetch Stats
-.addCase(fetchStats.pending, (state) => {
-    state.adminLoading = true
-    state.adminError = false
-})
-.addCase(fetchStats.fulfilled, (state, action) => {
-    state.adminLoading = false
-    state.adminSuccess = true
-    state.stats = action.payload
-    state.adminError = false
-})
-.addCase(fetchStats.rejected, (state, action) => {
-    state.adminLoading = false
-    state.adminError = true
-    state.adminErrorMessage = action.payload
-})
+            // Dismiss Report
+            .addCase(dismissReport.fulfilled, (state, action) => {
+                state.adminLoading = false
+                state.reports = state.reports.filter(r => r._id !== action.payload)
+            })
+            .addCase(dismissReport.rejected, (state, action) => {
+                state.adminLoading = false
+                state.adminError = true
+                state.adminErrorMessage = action.payload
+            })
     }
 })
 
@@ -278,51 +214,6 @@ export const dismissReport = createAsyncThunk("ADMIN/DISMISS_REPORT", async (rid
         return rid // ← dismissed report ki id return karo
     } catch (error) {
         const message = error.response?.data?.message || "Failed to dismiss report"
-        return thunkAPI.rejectWithValue(message)
-    }
-})
-
-// Update User
-export const updateUser = createAsyncThunk("ADMIN/UPDATE_USER", async ({ uid, data }, thunkAPI) => {
-    try {
-        const token = thunkAPI.getState().auth.user.token
-        return await adminService.updateUser(uid, data, token)
-    } catch (error) {
-        const message = error.response?.data?.message || "Failed to update user"
-        return thunkAPI.rejectWithValue(message)
-    }
-})
-
-// Delete User
-export const deleteUser = createAsyncThunk("ADMIN/DELETE_USER", async (uid, thunkAPI) => {
-    try {
-        const token = thunkAPI.getState().auth.user.token
-        await adminService.deleteUser(uid, token)
-        return uid
-    } catch (error) {
-        const message = error.response?.data?.message || "Failed to delete user"
-        return thunkAPI.rejectWithValue(message)
-    }
-})
-
-// Update Report
-export const updateReport = createAsyncThunk("ADMIN/UPDATE_REPORT", async ({ rid, data }, thunkAPI) => {
-    try {
-        const token = thunkAPI.getState().auth.user.token
-        return await adminService.updateReport(rid, data, token)
-    } catch (error) {
-        const message = error.response?.data?.message || "Failed to update report"
-        return thunkAPI.rejectWithValue(message)
-    }
-})
-
-// Fetch Stats
-export const fetchStats = createAsyncThunk("ADMIN/FETCH_STATS", async (_, thunkAPI) => {
-    try {
-        const token = thunkAPI.getState().auth.user.token
-        return await adminService.fetchStats(token)
-    } catch (error) {
-        const message = error.response?.data?.message || "Failed to fetch stats"
         return thunkAPI.rejectWithValue(message)
     }
 })

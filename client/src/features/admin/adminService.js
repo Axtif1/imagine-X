@@ -61,46 +61,14 @@ const dismissReport = async (rid, token) => {
     return response.data
 }
 
-// Update a user (admin)
-const updateUser = async (uid, data, token) => {
-    const options = { headers: { authorization: `Bearer ${token}` } }
-    const response = await axios.put(`${API_URL}/users/${uid}`, data, options)
-    return response.data
-}
-
-// Delete a user (admin)
-const deleteUser = async (uid, token) => {
-    const options = { headers: { authorization: `Bearer ${token}` } }
-    const response = await axios.delete(`${API_URL}/users/${uid}`, options)
-    return response.data
-}
-
-// Update a report (admin)
-const updateReport = async (rid, data, token) => {
-    const options = { headers: { authorization: `Bearer ${token}` } }
-    const response = await axios.put(`${API_URL}/reports/${rid}`, data, options)
-    return response.data
-}
-
-// Fetch stats (admin)
-const fetchStats = async (token) => {
-    const options = { headers: { authorization: `Bearer ${token}` } }
-    const response = await axios.get(`${API_URL}/stats`, options)
-    return response.data
-}
-
 const adminService = {
     fetchAllUsers,
     fetchAllPosts,
     fetchReports,
     toggleUserStatus,
     updateAdminPost,
-    deletePost,    
-    dismissReport,
-    updateUser,
-    deleteUser,
-    updateReport,
-    fetchStats
+    deletePost,
+    dismissReport
 }
 
 export default adminService
