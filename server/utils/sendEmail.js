@@ -3,7 +3,9 @@ import nodemailer from "nodemailer";
 const sendEmail = async (options) => {
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // Use STARTTLS instead of implicit SSL to bypass Render blocks
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
