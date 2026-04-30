@@ -3,15 +3,13 @@ import nodemailer from "nodemailer";
 const sendEmail = async (options) => {
   try {
     const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
+  host: "smtp-relay.brevo.com",
   port: 587,
   secure: false,
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
+    user: process.env.BREVO_USER,
+    pass: process.env.BREVO_PASS,
   },
-  // ✅ IPv4 force karo
-  family: 4,
 });
 
     const mailOptions = {
