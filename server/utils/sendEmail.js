@@ -61,15 +61,15 @@
 // export default sendEmail;
 
 
-import * as Brevo from '@getbrevo/brevo'
+import SibApiV3Sdk from '@getbrevo/brevo'
 
 const sendEmail = async (options) => {
   try {
-    const apiInstance = new Brevo.TransactionalEmailsApi()
+    const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi()
     
     apiInstance.authentications['apiKey'].apiKey = process.env.BREVO_API_KEY
 
-    const sendSmtpEmail = new Brevo.SendSmtpEmail()
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail()
 
     sendSmtpEmail.subject = options.subject
     sendSmtpEmail.htmlContent = options.html
