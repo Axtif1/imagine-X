@@ -3,14 +3,16 @@ import nodemailer from "nodemailer";
 const sendEmail = async (options) => {
   try {
     const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false, // Use STARTTLS instead of implicit SSL to bypass Render blocks
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false,
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
+  },
+  // ✅ IPv4 force karo
+  family: 4,
+});
 
     const mailOptions = {
       from: `ImagineX <${process.env.EMAIL_USER}>`,
