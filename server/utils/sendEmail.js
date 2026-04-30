@@ -61,7 +61,7 @@
 // export default sendEmail;
 
 
-import { TransactionalEmailsApi, SendSmtpEmail, ApiClient } from '@getbrevo/brevo'
+import { TransactionalEmailsApi, SendSmtpEmail } from '@getbrevo/brevo'
 
 const sendEmail = async (options) => {
   try {
