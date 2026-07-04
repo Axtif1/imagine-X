@@ -14,7 +14,7 @@
 //                     <div className="bg-gradient-to-tr from-violet-600 to-purple-500 rounded-lg p-1 group-hover:scale-105 transition-transform">
 //                       <Hexagon className="h-6 w-6 text-white" />
 //                     </div>
-//                     <span className="font-bold text-xl tracking-tight">Imaginex</span>
+//                     <span className="font-bold text-xl tracking-tight">Prismo</span>
 //                   </Link>
 //           <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">Admin Panel</h3>
 //           <nav className="flex flex-col gap-1">
@@ -51,7 +51,7 @@ export const AdminSidebar = () => {
           <div className="bg-gradient-to-tr from-violet-600 to-purple-500 rounded-lg p-1 group-hover:scale-105 transition-transform">
             <Hexagon className="h-6 w-6 text-white" />
           </div>
-          <span className="font-bold text-xl tracking-tight text-white">Imaginex</span>
+          <span className="font-bold text-xl tracking-tight text-white">Prismo</span>
         </Link>
       </div>
 

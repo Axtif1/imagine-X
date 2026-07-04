@@ -35,7 +35,7 @@ export const Sidebar = () => {
           <div className="bg-gradient-to-tr from-violet-600 to-purple-500 rounded-lg p-1 group-hover:scale-105 transition-transform">
             <Hexagon className="h-6 w-6 text-white" />
           </div>
-          <span className="font-bold text-xl tracking-tight">Imaginex</span>
+          <span className="font-bold text-xl tracking-tight">Prismo</span>
         </Link>
       </div>
       <div className="space-y-8 ">

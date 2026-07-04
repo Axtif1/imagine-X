@@ -107,7 +107,7 @@ export const SettingsPage = () => {
           <div className="animate-fadeIn space-y-8 max-w-2xl">
             <div>
               <h2 className="text-xl font-bold text-white mb-1">Profile Settings</h2>
-              <p className="text-zinc-400 text-sm mb-6">Manage your public identity on ImagineX.</p>
+              <p className="text-zinc-400 text-sm mb-6">Manage your public identity on Prismo.</p>
             </div>
             
             <form onSubmit={handleProfileSave} className="space-y-6">
@@ -219,7 +219,7 @@ export const SettingsPage = () => {
           <div className="animate-fadeIn space-y-8 max-w-2xl">
             <div>
               <h2 className="text-xl font-bold text-white mb-1">Appearance</h2>
-              <p className="text-zinc-400 text-sm mb-6">Customize how ImagineX looks on your device.</p>
+              <p className="text-zinc-400 text-sm mb-6">Customize how Prismo looks on your device.</p>
             </div>
 
             <div className="space-y-6">
@@ -297,7 +297,7 @@ export const SettingsPage = () => {
                 enabled={notifications.systemUpdates} 
                 onChange={(val) => setNotifications({...notifications, systemUpdates: val})}
                 label="System Updates"
-                description="Important updates about the ImagineX platform."
+                description="Important updates about the Prismo platform."
               />
             </div>
           </div>
@@ -322,7 +322,7 @@ export const SettingsPage = () => {
                 enabled={privacy.showOnlineStatus} 
                 onChange={(val) => setPrivacy({...privacy, showOnlineStatus: val})}
                 label="Show Online Status"
-                description="Let others see when you are active on ImagineX."
+                description="Let others see when you are active on Prismo."
               />
               <Toggle 
                 enabled={privacy.allowTagging} 

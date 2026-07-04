@@ -11,7 +11,7 @@ export const Footer = () => {
           <a href="#" className="hover:text-zinc-300 transition-colors">Creators</a>
         </div>
         <p className="text-xs text-zinc-600">
-          &copy; {new Date().getFullYear()} Imaginex. Built for inspiration.
+          &copy; {new Date().getFullYear()} Prismo. Built for inspiration.
         </p>
       </div>
     </footer>

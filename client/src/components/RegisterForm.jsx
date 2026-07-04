@@ -74,7 +74,7 @@ export const RegisterForm = () => {
             <Hexagon className="h-8 w-8 text-white" />
           </div>
         </Link>
-        <h2 className="text-3xl font-bold text-white mb-2">Join Imaginex</h2>
+        <h2 className="text-3xl font-bold text-white mb-2">Join Prismo</h2>
         <p className="text-zinc-400 text-sm">Create an account to save your creations</p>
       </div>
 
